@@ -1,11 +1,13 @@
 #pragma once
 #include <utility>
+#include <tuple>
+#include <vector>
 #include <GL/glut.h>
 
 class Star
 {
 public:
-	Star();
+	Star(GLfloat r, GLfloat g, GLfloat b, float radius);
 	~Star();
 
 	void x(float x) {
@@ -23,12 +25,17 @@ public:
 	}
 
 	void move();
+	void draw() const;
 
 private:
 	std::pair<GLfloat, GLfloat> mPosition;
+	std::vector<std::pair<GLfloat, GLfloat>> mCircle;
 	float mTime;
 	float mDeltaTime;
 	float mA;
 	float mB;
+	std::tuple<GLfloat, GLfloat, GLfloat> mColor;
+
 	void updatePosition();
+	void color() const;
 };

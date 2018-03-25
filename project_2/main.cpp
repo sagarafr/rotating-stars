@@ -1,22 +1,21 @@
 #include <GL/glut.h>
 #include <iostream>
 #include <vector>
+#include <tuple>
+#include <random>
 #include "star.hpp"
 
+std::random_device rd;
+std::uniform_real_distribution<float> dist(0, 1);
 std::vector<Star> gStar;
 
 void displayCallback(void) {
 	std::clog << "display\n";
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	glColor3f(static_cast<GLfloat>(0.5), static_cast<GLfloat>(0.25), static_cast<GLfloat>(0.5));
-	glPointSize(10.0f);
-	glBegin(GL_POINTS);
 	for (const auto & s : gStar) {
-		glVertex2d(s.x(), s.y());
+		s.draw();
 	}
-	glEnd();
 	glFlush();
 	glutSwapBuffers();
 }
@@ -31,18 +30,21 @@ void reshapeCallback(int width, int height) {
 void updateCallback(int value) {
 	std::clog << "update\n";
 	for (auto & s : gStar) {
-		// std::clog << "before star x [" << s.x() << "] y [" << s.y() << "]\n";
 		s.move();
-		// std::clog << "after star x [" << s.x() << "] y [" << s.y() << "]\n";
 	}
-	gStar.emplace_back(Star());
 	glutPostRedisplay();
-	glutTimerFunc(500, updateCallback, value);
+	glutTimerFunc(10, updateCallback, value);
+}
+
+void addStarCallback(int value) {
+	std::clog << "add star\n";
+	gStar.emplace(gStar.begin(), Star(static_cast<GLfloat>(dist(rd)), static_cast<GLfloat>(dist(rd)), static_cast<GLfloat>(dist(rd)), 10));
+	glutPostRedisplay();
+	glutTimerFunc(1000, addStarCallback, value);
 }
 
 int main(int argc, char **argv) {
 	glutInit(&argc, argv);
-	gStar.emplace_back(Star());
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
 	glutInitWindowSize(800, 600);
 	glutInitWindowPosition(200, 200);
@@ -50,12 +52,31 @@ int main(int argc, char **argv) {
 	glClearDepth(1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glutCreateWindow("rotationg stars");
+	/*
+	glEnable(GL_LIGHTING);
+	glEnable(GL_COLOR_MATERIAL);
+	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+	glShadeModel(GL_SMOOTH);
+	glEnable(GL_LIGHT0);
+	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
+
+	// global light
+	GLfloat global_ambient[] = { 0.4, 0.4, 0.4, 1 };
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, global_ambient);
+
+	// GL_LIGHT0
+	GLfloat diffuse[] = { 1, 1, 1, 1 };
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
+	*/
+
+	glutCreateWindow("rotating stars");
+
+	//gStar.emplace(gStar.begin(), Star(static_cast<GLfloat>(dist(rd)), static_cast<GLfloat>(dist(rd)), static_cast<GLfloat>(dist(rd)), 2));
 
 	glutDisplayFunc(displayCallback);
 	glutReshapeFunc(reshapeCallback);
 	glutTimerFunc(10, updateCallback, 0);
-	//glutIdleFunc()
+	glutTimerFunc(1000, addStarCallback, 1);
 
 	glutMainLoop();
 	return 0;
