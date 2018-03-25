@@ -1,6 +1,5 @@
 #include "star.hpp"
 #include <cmath>
-#include <iostream>
 
 #ifndef M_PI
 # define M_PI 3.14159265358979323846
@@ -8,6 +7,7 @@
 
 Star::Star(GLfloat r, GLfloat g, GLfloat b, float radius):mPosition(static_cast<GLfloat>(0), static_cast<GLfloat>(0)), mTime(0.0f), mDeltaTime(0.01f), mA(1.56f), mB(0.1759f), mColor(r, g, b) {
 	updatePosition();
+	mRadius = radius;
 	for (int cpt(0); cpt < 1000; ++cpt) {
 		double theta(2 * M_PI * cpt / 1000);
 		mCircle.emplace_back(std::make_pair<GLfloat, GLfloat>(static_cast<GLfloat>(radius * std::cos(theta)), static_cast<GLfloat>(radius * std::sin(theta))));
@@ -26,9 +26,11 @@ void Star::draw() const {
 	bool isFirst(true);
 	GLfloat xFirst(0.0f);
 	GLfloat yFirst(0.0f);
+
 	color();
 	glBegin(GL_TRIANGLE_FAN);
-	glVertex3f(x(), y(), 0.0f);
+	glNormal3d(0, 0, 1);
+	glVertex3f(x(), y(), 1.0f);
 	for (const auto & it : mCircle) {
 		if (isFirst) {
 			xFirst = it.first + x();

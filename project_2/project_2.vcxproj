@@ -126,12 +126,14 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="star.cpp" />
+    <ClCompile Include="StarManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="star.hpp" />
+    <ClInclude Include="starManager.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

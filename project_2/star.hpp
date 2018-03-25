@@ -34,6 +34,7 @@ private:
 	float mDeltaTime;
 	float mA;
 	float mB;
+	double mRadius;
 	std::tuple<GLfloat, GLfloat, GLfloat> mColor;
 
 	void updatePosition();
