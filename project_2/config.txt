@@ -1,0 +1,8 @@
+a=1.56
+b=0.1759
+height=800
+width=600
+addStarTime=1000
+updateTime=10
+deltaMoveStar=0.01
+windowTitle=rotating stars

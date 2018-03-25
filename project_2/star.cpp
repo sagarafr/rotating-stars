@@ -1,11 +1,12 @@
 #include "star.hpp"
+#include "configuration.hpp"
 #include <cmath>
 
 #ifndef M_PI
 # define M_PI 3.14159265358979323846
 #endif
 
-Star::Star(GLfloat r, GLfloat g, GLfloat b, float radius):mPosition(static_cast<GLfloat>(0), static_cast<GLfloat>(0)), mTime(0.0f), mDeltaTime(0.01f), mA(1.56f), mB(0.1759f), mColor(r, g, b) {
+Star::Star(GLfloat r, GLfloat g, GLfloat b, float radius):mPosition(static_cast<GLfloat>(0), static_cast<GLfloat>(0)), mTime(0.0f), mDeltaTime(Configuration::instance()->deltaMoveStar()), mA(Configuration::instance()->a()), mB(Configuration::instance()->b()), mColor(r, g, b) {
 	updatePosition();
 	mRadius = radius;
 	for (int cpt(0); cpt < 1000; ++cpt) {
@@ -41,6 +42,22 @@ void Star::draw() const {
 	}
 	glVertex3f(xFirst, yFirst, 0.0f);
 	glEnd();
+}
+
+void Star::rest(GLfloat r, GLfloat g, GLfloat b, float radius) {
+	mPosition.first = static_cast<GLfloat>(0);
+	mPosition.second = static_cast<GLfloat>(0);
+	mTime = 0.0f;
+	mDeltaTime = Configuration::instance()->deltaMoveStar();
+	mA = Configuration::instance()->a();
+	mB = Configuration::instance()->b();
+	mColor = std::make_tuple(r, g, b);
+	updatePosition();
+	mRadius = radius;
+	for (int cpt(0); cpt < 1000; ++cpt) {
+		double theta(2 * M_PI * cpt / 1000);
+		mCircle.emplace_back(std::make_pair<GLfloat, GLfloat>(static_cast<GLfloat>(radius * std::cos(theta)), static_cast<GLfloat>(radius * std::sin(theta))));
+	}
 }
 
 void Star::color() const {

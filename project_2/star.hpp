@@ -26,6 +26,7 @@ public:
 
 	void move();
 	void draw() const;
+	void rest(GLfloat r, GLfloat g, GLfloat b, float radius);
 
 private:
 	std::pair<GLfloat, GLfloat> mPosition;
